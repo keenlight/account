@@ -18,20 +18,18 @@ public class DataTimeCellFactory extends TableCell<Account, LocalDate>{
 	@Override
 	protected void updateItem(LocalDate date, boolean empty) {
 		super.updateItem(date, empty);
-		this.setBorder(Border.EMPTY);
 		if(!empty){
 			ImageView imageView = new ImageView(image);
-			imageView.setOnMouseEntered(e -> {
-				imageView.setCursor(Cursor.MOVE);
-			});
-			this.setOnMouseEntered(e -> {
-				this.getGraphic().setVisible(true);
-			});
-			this.setOnMouseExited(e -> {
-				this.getGraphic().setVisible(false);
+			this.setOnMouseMoved(e -> {
+				double x = e.getX();
+				if(x < image.getWidth()){
+					this.setCursor(Cursor.MOVE);
+				}else{
+					this.setCursor(Cursor.DEFAULT);
+				}
 			});
 			this.setGraphic(imageView);
-			this.getGraphic().setVisible(false);
+			imageView.setVisible(false);
 			this.setText(date.toString());
 		}
 	}

@@ -3,9 +3,7 @@ package org.keen.account;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableRow;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -14,23 +12,15 @@ public class DND {
 	
 	public static class AccountTableRow extends TableRow<Account> {
 		
-		private Image image;
-		public AccountTableRow(){
-			image = new Image(getClass().getResourceAsStream("arrows_drag_horiz_21.714285714286px_1182489_easyicon.net.png"), 9,9,false, false);
-		}
-		
 		@Override
 		protected void updateItem(Account account, boolean empty) {
-			this.getChildren().stream().forEach(e -> {
-				System.out.println(((TableCell)e).getText());
-			});;
 			super.updateItem(account, empty);
 			if (!empty) {
 				this.setOnMouseEntered(e -> {
-//					((MyTableColumn)this.getTableView().getColumns().get(0)).showDndIcon();
+					((TableCell<Account, Image>)this.getChildren().get(0)).getGraphic().setVisible(true);
 				});
 				this.setOnMouseExited(e -> {
-//					((MyTableColumn)this.getTableView().getColumns().get(0)).hideDndIcon();
+					((TableCell<Account, Image>)this.getChildren().get(0)).getGraphic().setVisible(false);
 				});
 				this.setOnDragDetected(e -> {
 					System.out.println("setOnDragDetected");
