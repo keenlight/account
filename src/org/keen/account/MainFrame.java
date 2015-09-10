@@ -3,19 +3,14 @@ package org.keen.account;
 import static org.keen.account.AccountCtrl.getAccountList;
 import static org.keen.account.AccountCtrl.getLabelList;
 
-
-
 import java.time.LocalDate;
 import java.util.List;
-
-
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,13 +18,13 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -73,12 +68,13 @@ public class MainFrame extends Application {
 	}
 
 	private ListView<AccountLabel> listView;
+
 	private ListView<AccountLabel> buildLabelList() {
 		listView = new ListView<>();
 		listView.setCellFactory(cb -> {
 			return new DND.LabelListCell();
 		});
-//		listView.getStyleClass().add("labelList");
+		// listView.getStyleClass().add("labelList");
 		updateLabelList(getLabelList());
 		return listView;
 	}
@@ -148,8 +144,7 @@ public class MainFrame extends Application {
 
 	private HBox buildMoneyCtrl() {// 金额控件
 		Label moneyLabel = new Label("金额");
-		ObservableList<MoneyDirection> items = FXCollections
-				.observableArrayList(MoneyDirection.out, MoneyDirection.in);
+		ObservableList<MoneyDirection> items = FXCollections.observableArrayList(MoneyDirection.out, MoneyDirection.in);
 		moneyDirection = new ChoiceBox<>(items);
 		moneyDirection.setValue(MoneyDirection.out);
 		money = new TextField();
@@ -206,11 +201,12 @@ public class MainFrame extends Application {
 	}
 
 	private Button buildAddAccountCtrl() {// 添加按钮
-		Button button = new Button("yes");
+		Button button = new Button();
+		Image image = new Image(getClass().getResourceAsStream("yes.png"), 15, 15, false, false);
+		button.setGraphic(new ImageView(image));
 		button.setOnAction(e -> {
 			try {
-				Account newAccount = new Account(getInputDate(),
-						getInputMoneyDirection(), getInputMoney(),
+				Account newAccount = new Account(getInputDate(), getInputMoneyDirection(), getInputMoney(),
 						getInputDesc());
 				addAccountOnTable(newAccount);
 				clearInputArea();
@@ -231,18 +227,38 @@ public class MainFrame extends Application {
 		table = new TableView<>();
 		table.setRowFactory(cb -> {
 			return new DND.AccountTableRow();
-			
+
 		});
-		TableColumn<Account, LocalDate> dateTimeCol = new TableColumn<>("日期");
+		TableColumn<Account, LocalDate> dateTimeCol = new TableColumn<>();
 		dateTimeCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+		dateTimeCol.setSortable(false);
+		BorderPane borderPane = new BorderPane();
+		borderPane.setCenter(new Label("日期"));
+		Button btn = new Button();
+		btn.setBorder(Border.EMPTY);
+		Image image = new Image(getClass().getResourceAsStream("down_triangle.png"), 8, 8,
+				false, false);
+		ImageView imageView = new ImageView(image);
+		imageView.setOnMouseClicked(e -> {
+			System.out.println("click");
+		});
+		HBox hbox = new HBox(imageView);
+		imageView.setVisible(false);
+		hbox.setAlignment(Pos.CENTER_RIGHT);
+		borderPane.setRight(hbox);
+		borderPane.setOnMouseEntered(e -> {
+			imageView.setVisible(true);
+		});
+		borderPane.setOnMouseExited(e -> {
+			imageView.setVisible(false);
+		});
+		dateTimeCol.setGraphic(borderPane);
 		dateTimeCol.setMinWidth(150);
-		dateTimeCol.setResizable(false);
 		dateTimeCol.setCellFactory(cb -> {
 			return new DataTimeCellFactory();
 		});
 		TableColumn<Account, String> directionCol = new TableColumn<>("流向");
-		directionCol.setCellValueFactory(new PropertyValueFactory<>(
-				"moneyDirection"));
+		directionCol.setCellValueFactory(new PropertyValueFactory<>("moneyDirection"));
 		directionCol.setMinWidth(100);
 		TableColumn<Account, Double> moneyCol = new TableColumn<>("金额");
 		moneyCol.setCellValueFactory(new PropertyValueFactory<>("money"));
@@ -263,7 +279,4 @@ public class MainFrame extends Application {
 	private void addAccountOnTable(Account newAccount) {
 		this.table.getItems().add(newAccount);
 	}
-	
-	
-
 }

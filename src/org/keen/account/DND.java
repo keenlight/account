@@ -3,6 +3,7 @@ package org.keen.account;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableRow;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -34,8 +35,13 @@ public class DND {
 	}
 
 	public static class LabelListCell extends ListCell<AccountLabel> {
+		
+		public LabelListCell(){
+			setPrefHeight(50);
+		}
+		
 		@Override
-		protected void updateItem(AccountLabel label, boolean empty) {
+		public void updateItem(AccountLabel label, boolean empty) {
 			super.updateItem(label, empty);
 			if (!empty) {
 				setText(label.getName());
