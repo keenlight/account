@@ -14,8 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import org.keen.account.ModalDialog;
-
 public class DragAndDropTest extends Application{
 
 	public static void main(String[] args) {
@@ -26,9 +24,6 @@ public class DragAndDropTest extends Application{
 	public void start(Stage stage) throws Exception {
 		HBox root = new HBox(50);
 		Button btn = new Button("confirm");
-		btn.setOnAction(e -> {
-			new ModalDialog(stage);
-		});
 		root.getChildren().addAll(m_drag, m_drop);
 		func();
 		stage.setScene(new Scene(root , 600, 400));

@@ -1,12 +1,12 @@
 package org.keen.account.test;
 
 import javafx.application.Application;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import org.keen.account.ModalDialog;
+
+import org.keen.account.MessgeDialog;
 
 public class ModalDialogTest extends Application{
 
@@ -19,7 +19,7 @@ public class ModalDialogTest extends Application{
 		HBox root = new HBox();
 		Button btn = new Button("confirm");
 		btn.setOnAction(e -> {
-			new ModalDialog(stage);
+			new MessgeDialog(stage, "消息");
 		});
 		root.getChildren().add(btn);
 		stage.setScene(new Scene(root , 600, 400));

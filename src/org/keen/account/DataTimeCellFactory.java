@@ -12,7 +12,7 @@ public class DataTimeCellFactory extends TableCell<Account, LocalDate> {
 	private Image image;
 
 	public DataTimeCellFactory() {
-		image = new Image(getClass().getResourceAsStream("arrows_drag_vert_931px_1182496_easyicon.net.png"), 9, 9,
+		image = new Image(getClass().getResourceAsStream("arrows_drag_vert_931px_1182496_easyicon.net.png"), 7, 9,
 				false, false);
 	}
 

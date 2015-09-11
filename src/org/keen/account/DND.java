@@ -1,10 +1,9 @@
 package org.keen.account;
 
+import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableRow;
-import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -18,10 +17,18 @@ public class DND {
 			super.updateItem(account, empty);
 			if (!empty) {
 				this.setOnMouseEntered(e -> {
-					((TableCell<Account, Image>)this.getChildren().get(0)).getGraphic().setVisible(true);
+					Node node = this.getChildren().get(0);
+					if(node instanceof TableCell){
+						TableCell<?, ?> firstCell = (TableCell<?, ?>)node;
+						firstCell.getGraphic().setVisible(true);
+					}
 				});
 				this.setOnMouseExited(e -> {
-					((TableCell<Account, Image>)this.getChildren().get(0)).getGraphic().setVisible(false);
+					Node node = this.getChildren().get(0);
+					if(node instanceof TableCell){
+						TableCell<?, ?> firstCell = (TableCell<?, ?>)node;
+						firstCell.getGraphic().setVisible(false);
+					}
 				});
 				this.setOnDragDetected(e -> {
 					System.out.println("setOnDragDetected");
