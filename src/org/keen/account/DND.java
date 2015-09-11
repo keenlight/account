@@ -7,6 +7,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Border;
+import javafx.scene.text.Text;
 
 public class DND {
 	

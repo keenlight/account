@@ -6,6 +6,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
 
 public class DataTimeTableCell extends TableCell<Account, LocalDate> {
 
@@ -32,6 +33,8 @@ public class DataTimeTableCell extends TableCell<Account, LocalDate> {
 			this.setGraphic(imageView);
 			imageView.setVisible(false);
 			this.setText(date.toString());
+		}else{
+			setBorder(Border.EMPTY);
 		}
 	}
 }

@@ -6,6 +6,19 @@
 	-fx-background-color: #7492c1;
 }
 
+.table-row-cell {
+	-fx-background: -fx-control-inner-background;
+    -fx-background-color: -fx-table-cell-border-color, -fx-background;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0;
+    -fx-text-fill: -fx-text-background-color;
+}
+
+.table-row-cell:selected {
+	 -fx-background-color: -fx-table-cell-border-color, -fx-background;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
 .logo {
 	-fx-background-color: #0000ff;
 }
