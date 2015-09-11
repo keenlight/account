@@ -7,11 +7,11 @@ import javafx.scene.control.TableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class DataTimeCellFactory extends TableCell<Account, LocalDate> {
+public class DataTimeTableCell extends TableCell<Account, LocalDate> {
 
 	private Image image;
 
-	public DataTimeCellFactory() {
+	public DataTimeTableCell() {
 		image = new Image(getClass().getResourceAsStream("arrows_drag_vert_931px_1182496_easyicon.net.png"), 7, 9,
 				false, false);
 	}

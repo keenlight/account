@@ -1,7 +1,15 @@
-.labelList{  
-    -fx-background-color: #aaffff;
+.list-cell {
+	-fx-background-color: #dae4f2;
 }
 
-.logo{
+.list-cell:selected {
+	-fx-background-color: #7492c1;
+}
+
+.logo {
 	-fx-background-color: #0000ff;
+}
+
+.labelInfo {
+	-fx-background-color: #5f7fb0;
 }

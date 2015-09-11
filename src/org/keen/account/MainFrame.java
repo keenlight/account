@@ -3,8 +3,14 @@ package org.keen.account;
 import static org.keen.account.AccountCtrl.getAccountList;
 import static org.keen.account.AccountCtrl.getLabelList;
 
+
+
+
 import java.time.LocalDate;
 import java.util.List;
+
+
+
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -15,13 +21,19 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.PopupControlBuilder;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Border;
@@ -30,7 +42,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.util.converter.DoubleStringConverter;
 
 public class MainFrame extends Application {
 
@@ -49,6 +63,9 @@ public class MainFrame extends Application {
 		Scene scene = new Scene(root, 800, 600);
 		scene.getStylesheets().add("skin.css");
 		stage.setScene(scene);
+		stage.setResizable(false);
+		stage.sizeToScene();
+		stage.centerOnScreen();
 		stage.show();
 	}
 
@@ -62,6 +79,7 @@ public class MainFrame extends Application {
 
 	private FlowPane buildLogo(int height) {
 		FlowPane flowPane = new FlowPane();
+		flowPane.getStyleClass().add("labelInfo");
 		flowPane.setPrefHeight(height);
 		flowPane.getStyleClass().add("logo");
 		return flowPane;
@@ -74,7 +92,6 @@ public class MainFrame extends Application {
 		listView.setCellFactory(cb -> {
 			return new DND.LabelListCell();
 		});
-		// listView.getStyleClass().add("labelList");
 		updateLabelList(getLabelList());
 		return listView;
 	}
@@ -94,6 +111,7 @@ public class MainFrame extends Application {
 
 	private FlowPane buildLabelInfo(int height) {
 		FlowPane flowPane = new FlowPane();
+		flowPane.getStyleClass().add("labelInfo");
 		flowPane.setPrefHeight(height);
 		flowPane.getChildren().add(new Text("标签分类"));
 		return flowPane;
@@ -194,8 +212,6 @@ public class MainFrame extends Application {
 	}
 
 	private void clearInputArea() {
-		// date.setValue(null);
-		// moneyDirection.setValue(MoneyDirection.out);
 		money.setText("");
 		desc.setText("");
 	}
@@ -225,9 +241,11 @@ public class MainFrame extends Application {
 
 	private TableView<Account> buildAccountTable() {// 账目表
 		table = new TableView<>();
+		table.setEditable(true);
+//		table.getSelectionModel().setCellSelectionEnabled(true);
+		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		table.setRowFactory(cb -> {
 			return new DND.AccountTableRow();
-
 		});
 		TableColumn<Account, LocalDate> dateTimeCol = new TableColumn<>();
 		dateTimeCol.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -241,7 +259,14 @@ public class MainFrame extends Application {
 		ImageView imageView = new ImageView(image);
 		imageView.setOnMouseClicked(e -> {
 			System.out.println("click");
+			ContextMenu contextMenu = new ContextMenu();
+			contextMenu.setMinSize(100, 100);
+			contextMenu.setPrefSize(100, 100);
+			contextMenu.getItems().add(new MenuItem("a"));
+			contextMenu.show(mainStage, e.getScreenX(), e.getScreenY() + 3);
 		});
+		imageView.setOnMouseEntered(UIUtils.setHandCursor(imageView));
+		imageView.setOnMouseExited(UIUtils.setDefaultCursor(imageView));
 		HBox hbox = new HBox(imageView);
 		imageView.setVisible(false);
 		hbox.setAlignment(Pos.CENTER_RIGHT);
@@ -253,20 +278,46 @@ public class MainFrame extends Application {
 			imageView.setVisible(false);
 		});
 		dateTimeCol.setGraphic(borderPane);
-		dateTimeCol.setMinWidth(150);
+		dateTimeCol.setMinWidth(100);
 		dateTimeCol.setCellFactory(cb -> {
-			return new DataTimeCellFactory();
+			return new DataTimeTableCell();
 		});
 		TableColumn<Account, String> directionCol = new TableColumn<>("流向");
 		directionCol.setCellValueFactory(new PropertyValueFactory<>("moneyDirection"));
-		directionCol.setMinWidth(100);
+		directionCol.setMinWidth(80);
+		directionCol.setCellFactory(cb -> {
+			return new ChoiceBoxTableCell<>(MoneyDirection.in.toString(), MoneyDirection.out.toString());
+		});
+		directionCol.setOnEditCommit(e -> {
+			int row = e.getTablePosition().getRow();
+			e.getTableView().getItems().get(row).setMoneyDirection(e.getNewValue());
+		});
 		TableColumn<Account, Double> moneyCol = new TableColumn<>("金额");
 		moneyCol.setCellValueFactory(new PropertyValueFactory<>("money"));
-		moneyCol.setMinWidth(100);
+		moneyCol.setMinWidth(80);
+		moneyCol.setEditable(true);
+		moneyCol.setCellFactory(TextFieldTableCell.<Account, Double>forTableColumn(new DoubleStringConverter()));
+		moneyCol.setOnEditCommit(t -> {
+			try {
+				int row = t.getTablePosition().getRow();
+				Double newValue = t.getNewValue();
+				t.getTableView().getItems().get(row).setMoney(newValue);
+			} catch (NumberFormatException ex) {
+				MessgeDialog.show(mainStage, ex.getMessage());
+			} catch (Exception ex) {
+				MessgeDialog.show(mainStage, "修改金额失败");
+			}
+		});
 		TableColumn<Account, String> descCol = new TableColumn<>("描述");
 		descCol.setCellValueFactory(new PropertyValueFactory<>("desc"));
-		descCol.setMinWidth(100);
-		table.getColumns().addAll(dateTimeCol, directionCol, moneyCol, descCol);
+		descCol.setMinWidth(270);
+		TableColumn<Account, ?> handleCol = new TableColumn<>("操作");
+		handleCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+		handleCol.setMinWidth(70);
+		handleCol.setCellFactory(cb -> {
+			return new HandleTableCell();
+		});
+		table.getColumns().addAll(dateTimeCol, directionCol, moneyCol, descCol, handleCol);
 		updateAccountTable(getAccountList());
 		return table;
 	}

@@ -44,12 +44,15 @@ public class DND {
 	public static class LabelListCell extends ListCell<AccountLabel> {
 		
 		public LabelListCell(){
-			setPrefHeight(50);
+			setPrefHeight(30);
 		}
 		
 		@Override
 		public void updateItem(AccountLabel label, boolean empty) {
 			super.updateItem(label, empty);
+			getStyleClass().add("labelListCell");
+//			getStyleClass().remove("indexed-cell");
+//			getStyleClass().remove("list-cell");
 			if (!empty) {
 				setText(label.getName());
 				this.setOnDragDropped(e -> {
